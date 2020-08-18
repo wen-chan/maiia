@@ -11,19 +11,34 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class PostsController {
     private final Logger logger = LoggerFactory.getLogger(PostsController.class);
 
+    public JsonDBTemplate jsonDBTemplate;
 
     @RequestMapping("/posts")
     public String posts() {
-        return readUrl("https://jsonplaceholder.typicode.com/posts");
+        initJsonDB();
+        if (jsonDBTemplate.findAll(Post.class).isEmpty()) {
+            insertPosts("https://jsonplaceholder.typicode.com/posts");
+        }
+        Comparator<Post> comparator = new Comparator<Post>() {
+            @Override
+            public int compare(Post post1, Post post2) {
+                return (post1.getTitle().compareTo(post2.getTitle()));
+            }
+        };
+        List<Post> sortedPosts = jsonDBTemplate.findAll(Post.class, comparator);
+        List<Post> fiftySortedPosts = sortedPosts.stream().limit(50).collect(Collectors.toList());
+        return fiftySortedPosts.toString();
     }
 
-    public String readUrl(String httpUrl){
-        JsonDBTemplate jsonDBTemplate = initJsonDB();
+    public String insertPosts(String httpUrl){
         Post[] posts = {};
         try{
             URL url = new URL(httpUrl);
@@ -40,15 +55,14 @@ public class PostsController {
         return posts.toString();
     }
 
-    public JsonDBTemplate initJsonDB() {
+    public void initJsonDB() {
         String dbFilesLocation = ".";
         String baseScanPackage = "com.maiia.test.jsondb";
 
-        JsonDBTemplate jsonDBTemplate = new JsonDBTemplate(dbFilesLocation, baseScanPackage);
+        jsonDBTemplate = new JsonDBTemplate(dbFilesLocation, baseScanPackage);
         if (!jsonDBTemplate.collectionExists(Post.class)) {
             jsonDBTemplate.createCollection(Post.class);
-        }
-        return jsonDBTemplate;
+        };
     }
 }
 
