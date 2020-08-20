@@ -5,6 +5,7 @@ import com.maiia.test.jsondb.Post;
 import io.jsondb.JsonDBTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,8 +22,9 @@ public class PostsController {
 
     public JsonDBTemplate jsonDBTemplate;
 
+    @CrossOrigin(origins={"http://localhost:4200", "http://localhost:3000"})
     @RequestMapping("/posts")
-    public String posts() {
+    public List<Post> posts() {
         initJsonDB();
         if (jsonDBTemplate.findAll(Post.class).isEmpty()) {
             insertPosts("https://jsonplaceholder.typicode.com/posts");
@@ -35,7 +37,7 @@ public class PostsController {
         };
         List<Post> sortedPosts = jsonDBTemplate.findAll(Post.class, comparator);
         List<Post> fiftySortedPosts = sortedPosts.stream().limit(50).collect(Collectors.toList());
-        return fiftySortedPosts.toString();
+        return fiftySortedPosts;
     }
 
     public String insertPosts(String httpUrl){
