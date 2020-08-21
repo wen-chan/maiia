@@ -36,3 +36,38 @@
     transform: rotate(360deg);
   }
 }
+
+.title {
+  color: #61c6c4;
+  text-align: center;
+}
+
+.post {
+  background-color: white;
+  color: black;
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-top: 2%;
+  padding: 1%;
+  border-radius: 5px;
+}
+
+.post-id {
+  text-align: right;
+}
+
+.post-title {
+  color: #61c6c4;
+  font-weight: bold;
+  font-size: large;
+}
+
+.post-user {
+  color: black;
+  font-size: small;
+}
+
+html{
+  background-color: #f7f7f7;
+}
+

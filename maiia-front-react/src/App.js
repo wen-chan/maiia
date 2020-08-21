@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "./App.css";
 
 class App extends Component {
     constructor() {
@@ -15,13 +16,15 @@ class App extends Component {
     render() {
         return (
             <div>
-                <ul>
-                    {this.state.data.map(el => (
-                        <li>
-                            {el.id}: {el.title}
-                        </li>
-                    ))}
-                </ul>
+                <h1 className="title">POSTS</h1>
+                {this.state.data.map(group =>
+                    <div className="post" key={group.id}>
+                        <div className="post-id">{group.id}</div>
+                        <div className="post-title">{group.title}</div>
+                        <div className="post-user">USER {group.userId}</div>
+                        <div>{group.body}</div>
+                    </div>
+                )}
             </div>
         );
     }
